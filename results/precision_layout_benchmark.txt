@@ -1,0 +1,12 @@
+﻿ResNet18     cl=True  torch.float16     98.63 ms/iter ->   38.6 s/epoch
+ResNet18     cl=True  torch.bfloat16    29.18 ms/iter ->   11.4 s/epoch
+ResNet18     cl=False torch.float16     35.52 ms/iter ->   13.9 s/epoch
+ResNet18     cl=False torch.bfloat16    36.84 ms/iter ->   14.4 s/epoch
+MobileNetV2  cl=True  torch.float16    268.30 ms/iter ->  104.9 s/epoch
+MobileNetV2  cl=True  torch.bfloat16    31.48 ms/iter ->   12.3 s/epoch
+MobileNetV2  cl=False torch.float16     38.79 ms/iter ->   15.2 s/epoch
+MobileNetV2  cl=False torch.bfloat16    56.68 ms/iter ->   22.2 s/epoch
+MediumCNN    cl=True  torch.float16     37.06 ms/iter ->   14.5 s/epoch
+MediumCNN    cl=True  torch.bfloat16     9.09 ms/iter ->    3.6 s/epoch
+MediumCNN    cl=False torch.float16     10.97 ms/iter ->    4.3 s/epoch
+MediumCNN    cl=False torch.bfloat16    11.91 ms/iter ->    4.7 s/epoch

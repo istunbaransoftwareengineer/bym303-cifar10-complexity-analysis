@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-11-23T14:16:36",
+  "os": "Windows 11 (10.0.26300)",
+  "cpu": "12th Gen Intel(R) Core(TM) i7-12700H",
+  "cpu_physical_cores": 14,
+  "cpu_logical_cores": 20,
+  "ram_total_gb": 31.7,
+  "python": "3.12.10",
+  "torch": "2.6.0+cu124",
+  "torchvision": "0.21.0+cu124",
+  "cuda": "12.4",
+  "cudnn": 90100,
+  "numpy": "2.5.4",
+  "scikit_learn": "1.9.1",
+  "codecarbon": "3.3.3",
+  "torch_cpu_threads": 14,
+  "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "gpu_driver": "621.24",
+  "gpu_mem_total_mb": 8188.0,
+  "gpu_power_limit_w": 100.0,
+  "gpu_energy_counter": true,
+  "protocol": {
+    "models": [
+      "MLP",
+      "SmallCNN",
+      "MediumCNN",
+      "MobileNetV2",
+      "ResNet18"
+    ],
+    "fractions": [
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "epochs": 15,
+    "batch_size": 128,
+    "lr": 0.1,
+    "infer_batch": 1000,
+    "min_infer_seconds": 3.0,
+    "latency_samples": 300,
+    "cpu_infer": true,
+    "cpu_infer_samples": 2000,
+    "cpu_infer_batch": 250,
+    "pause": 5.0,
+    "out": "C:\\Users\\baran\\AppData\\Local\\Claude-Data\\anthropicpbc.claude_fnn82j28hfe8t\\scratch-workspaces\\e990318b-1805-4c00-b478-d85b65c2cc6c\\065ac6a9-19ab-4eb4-a509-2829fcdf664b\\scratch-2026-11-23-d85e14\\project\\results",
+    "quick": false
+  },
+  "gpu_idle_power_w": 16.713353535353537,
+  "cpu_idle_util": 11.306060606060605
+}

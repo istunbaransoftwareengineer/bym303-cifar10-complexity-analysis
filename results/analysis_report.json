@@ -1,0 +1,34 @@
+{
+  "pareto_front": [
+    "MLP",
+    "SmallCNN",
+    "MediumCNN",
+    "ResNet18"
+  ],
+  "spearman_flops_time": [
+    0.6,
+    0.28475697986529386
+  ],
+  "spearman_params_time": [
+    0.49999999999999994,
+    0.3910022189557703
+  ],
+  "pearson_logflops_logtime": [
+    0.7995503961501005,
+    0.10443168219813609
+  ],
+  "pearson_theo_vs_meas_vram": [
+    0.9770398491558633,
+    0.004161928074874281
+  ],
+  "theoretical_vram_mb": {
+    "MLP": 44.90587615966797,
+    "SmallCNN": 34.30309295654297,
+    "MediumCNN": 188.21276092529297,
+    "MobileNetV2": 885.7886276245117,
+    "ResNet18": 473.87828826904297
+  },
+  "resnet_vs_medium_delta_acc_pts": 1.6340000000000021,
+  "resnet_vs_medium_delta_energy_kj": 8.9657072,
+  "kj_per_extra_acc_point": 5.4869689106487085
+}

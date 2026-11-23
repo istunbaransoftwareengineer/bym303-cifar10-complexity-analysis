@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BYM303 – CIFAR-10 Zaman, Bellek, Enerji ve Performans Analizi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400;600&display=swap">
+<style>
+:root {
+  --ink: #14213D;
+  --ink-soft: #4A5568;
+  --paper: #F7F6F2;
+  --paper-2: #ECEAE3;
+  --accent: #2A78D6;
+  --accent-2: #EB6834;
+  --line: #D6D3C9;
+  --on-dark: #F2F1EC;
+  --on-dark-soft: #B9C3D6;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: var(--ink); }
+section { padding: 128px 128px 160px; background: var(--paper); counter-increment: page; display: flex; flex-direction: column; gap: 40px; box-sizing: border-box; }
+section.dark { background: var(--ink); color: var(--on-dark); }
+section.alt { background: var(--paper-2); }
+h1, h2, h3 { font-family: 'Space Grotesk', Arial, sans-serif; margin: 0; }
+h1 { font-size: 96px; font-weight: 700; line-height: 1.05; }
+h2 { font-size: 64px; font-weight: 600; line-height: 1.1; color: var(--ink); }
+h3 { font-size: 36px; font-weight: 600; line-height: 1.2; color: var(--ink); }
+p { margin: 0; font-size: 32px; line-height: 1.4; color: var(--ink-soft); }
+.eyebrow { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 26px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); }
+.dark .eyebrow { color: #7FB2F0; }
+.dark h1, .dark h2, .dark h3 { color: var(--on-dark); }
+.dark p { color: var(--on-dark-soft); }
+.lead { font-size: 36px; color: var(--ink-soft); max-width: 1500px; }
+.row { display: flex; gap: 40px; align-items: stretch; }
+.col { display: flex; flex-direction: column; gap: 24px; flex: 1; }
+.card { background: #FBFBF8; border: 2px solid var(--line); border-radius: 20px; padding: 36px 40px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.dark .card { background: #1E2D4F; border-color: #2E4170; }
+.card .num { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 88px; font-weight: 700; color: var(--accent); line-height: 1; }
+.card .lbl { font-size: 28px; color: var(--ink-soft); }
+.dark .card .lbl { color: var(--on-dark-soft); }
+.card .txt { font-size: 28px; color: var(--ink-soft); line-height: 1.35; }
+.formula { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 44px; font-weight: 600; color: var(--ink); background: #FBFBF8; border-left: 8px solid var(--accent); padding: 20px 32px; border-radius: 8px; }
+.fig { background: #FFFFFF; border: 2px solid var(--line); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: center; }
+.fig img { object-fit: contain; }
+.take { display: flex; flex-direction: column; gap: 22px; flex: 1; }
+.take p { font-size: 30px; }
+.take .big { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 40px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+.pill { font-size: 26px; font-weight: 600; color: #FBFBF8; background: var(--accent); padding: 8px 22px; border-radius: 999px; }
+.footer { position: absolute; left: 128px; bottom: 64px; width: 1664px; font-size: 24px; color: #8A8778; display: flex; justify-content: space-between; }
+.dark .footer { color: #7D8AA6; }
+table { font-size: 28px; color: var(--ink); width: 100%; }
+.hl { color: var(--accent-2); font-weight: 600; }
+.cover-names p { font-size: 30px; color: var(--on-dark); }
+.cover-names .no { color: var(--on-dark-soft); }
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.anim { animation: rise 600ms ease-out both; animation-delay: calc(var(--i, 0) * 120ms); }
+
+html, body { margin: 0; background: #2b2b2b; }
+section { width: 1920px; height: 1080px; position: relative; overflow: hidden; margin: 0 auto 24px; }
+.anim { animation: none !important; }
+@page { size: 1920px 1080px; margin: 0; }
+@media print { html, body { background: none; } section { margin: 0; page-break-after: always; break-after: page; } }
+</style></head><body>
+<section id="cover" class="dark" style="justify-content: space-between;" data-transition="fade">
+<div class="col" style="gap: 28px; flex: 0;">
+<p class="eyebrow">BYM303 Algoritma Analizi · Dönem Projesi 2026–2027</p>
+<h1 style="max-width: 1560px;">Zaman, Bellek, Enerji ve Doğruluk: CIFAR-10’da Beş Derin Öğrenme Modelinin Deneysel Karmaşıklık Analizi</h1>
+<p style="font-size: 34px; max-width: 1400px;">5 model · 4 veri boyutu · 5 tekrar = 100 ölçümlü eğitim — RTX 4060 Laptop GPU</p>
+</div>
+<div class="row cover-names" style="gap: 56px;">
+<div class="col" style="gap: 4px; flex: 0 0 auto;"><p><b>Baran Kemal Kılıç</b></p><p class="no">240609043</p></div>
+<div class="col" style="gap: 4px; flex: 0 0 auto;"><p><b>İrem Serra Onmaz</b></p><p class="no">240609009</p></div>
+<div class="col" style="gap: 4px; flex: 0 0 auto;"><p><b>Nihat Güney</b></p><p class="no">240609050</p></div>
+<div class="col" style="gap: 4px; flex: 0 0 auto;"><p><b>Süleyman Canberk Eğriboz</b></p><p class="no">240609014</p></div>
+</div>
+
+</section>
+<section id="problem">
+<p class="eyebrow">Problem</p>
+<h2>Maliyet yalnızca süre değildir</h2>
+<div class="row">
+<div class="col" style="gap: 28px;">
+<p class="lead">Klasik analiz T(n) ve S(n) ile yetinir. Yapay zekâ modellerinde üçüncü bir kaynak eşit derecede önemli: <b>enerji</b>.</p>
+<div class="formula">E(n) = P<sub>ort</sub> × T(n)</div>
+<p>Formül enerjiyi süreye indirger gibi görünür. Ama P<sub>ort</sub> sabit değil: donanımın ne kadar yoğun kullanıldığına, yani algoritmanın kendisine bağlı.</p>
+</div>
+<div class="col" style="flex: 0 0 620px; gap: 16px;">
+<div class="card anim" style="--i:0; padding: 24px 32px;"><h3>Zaman</h3><p class="txt">Eğitim ve tahmin süresi ayrı ayrı</p></div>
+<div class="card anim" style="--i:1; padding: 24px 32px;"><h3>Bellek</h3><p class="txt">Peak RAM ve peak VRAM</p></div>
+<div class="card anim" style="--i:2; padding: 24px 32px;"><h3>Enerji ve karbon</h3><p class="txt">Joule, Wh, g CO₂</p></div>
+<div class="card anim" style="--i:3; padding: 24px 32px;"><h3>Performans</h3><p class="txt">Accuracy, Precision, Recall, F1, ROC-AUC</p></div>
+</div>
+</div>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>2</span></div>
+
+</section>
+<section id="hypotheses" class="alt">
+<p class="eyebrow">Araştırma soruları</p>
+<h2>Teoriden türettiğimiz beş hipotez</h2>
+<table>
+<tr><th style="width: 9%;">#</th><th style="width: 56%;">Hipotez</th><th style="width: 35%;">Teorik dayanak</th></tr>
+<tr><td>H1</td><td>Eğitim süresi ve enerjisi veri boyutuyla doğrusal büyür (eğim b ≈ 1)</td><td>W = 3·F·n·E = Θ(n)</td></tr>
+<tr><td>H2</td><td>Modeller arası maliyet işlem sayısına (F) göre sıralanır ama F ile orantılı değildir</td><td>Roofline modeli</td></tr>
+<tr><td>H3</td><td>Eğitim belleği parametrelerle değil aktivasyonlarla belirlenir</td><td>M = 3·4P + B·A·2</td></tr>
+<tr><td>H4</td><td>Ortalama güç modele göre değişir; enerji, süre × sabit değildir</td><td>E = P<sub>ort</sub> × T</td></tr>
+<tr><td>H5</td><td>Doğruluk artar ama joule başına getiri azalır</td><td>Ölçekleme yasaları</td></tr>
+</table>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>3</span></div>
+
+</section>
+<section id="setup">
+<p class="eyebrow">Deney düzeni</p>
+<h2>100 kontrollü eğitim, tek donanım</h2>
+<div class="row">
+<div class="card anim" style="--i:0;"><p class="num">5</p><p class="lbl">model: MLP, SmallCNN, MediumCNN, MobileNetV2, ResNet-18</p></div>
+<div class="card anim" style="--i:1;"><p class="num">4</p><p class="lbl">veri boyutu: 5k · 12,5k · 25k · 50k görüntü (stratified)</p></div>
+<div class="card anim" style="--i:2;"><p class="num">5</p><p class="lbl">tekrar (seed 0–4), mean ± std raporlanır</p></div>
+<div class="card anim" style="--i:3;"><p class="num">100</p><p class="lbl">ölçümlü eğitim + inference koşusu</p></div>
+</div>
+<div class="row" style="gap: 40px;">
+<div class="col"><h3>CIFAR-10</h3><p>60.000 adet 32×32 RGB görüntü, 10 dengeli sınıf. 50.000 eğitim, 10.000 test. Tüm modeller aynı 10k test kümesinde değerlendirilir.</p></div>
+<div class="col"><h3>Ortak eğitim protokolü</h3><p>15 epoch · batch 128 · SGD + Nesterov · one-cycle LR · bfloat16 karma hassasiyet · aynı seed → tüm modellerde aynı alt küme</p></div>
+</div>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>4</span></div>
+
+</section>
+<section id="models">
+<p class="eyebrow">Modeller ve teorik maliyet</p>
+<h2>Parametre ve işlem sayısı bağımsız</h2>
+<table>
+<tr><th style="width: 22%;">Model</th><th style="width: 30%;">Yapı</th><th style="width: 16%; text-align: right;">Parametre P</th><th style="width: 16%; text-align: right;">MACs / görüntü F</th><th style="width: 16%; text-align: right;">Aktivasyon A</th></tr>
+<tr><td>MLP</td><td>3 gizli tam bağlı katman</td><td style="text-align: right;">3,81 M</td><td style="text-align: right;">3,8 M</td><td style="text-align: right;">5 K</td></tr>
+<tr><td>SmallCNN</td><td>2 konvolüsyon + FC</td><td style="text-align: right;">0,55 M</td><td style="text-align: right;">6,1 M</td><td style="text-align: right;">115 K</td></tr>
+<tr><td>MediumCNN</td><td>VGG tarzı 6 konv. + BN</td><td style="text-align: right;">1,15 M</td><td style="text-align: right;">152,8 M</td><td style="text-align: right;">717 K</td></tr>
+<tr><td>MobileNetV2</td><td>Depthwise ayrışık, 17 blok</td><td style="text-align: right;">2,30 M</td><td style="text-align: right;">91,2 M</td><td style="text-align: right;">3.521 K</td></tr>
+<tr><td>ResNet-18</td><td>Residual, 8 temel blok</td><td style="text-align: right;">11,17 M</td><td style="text-align: right;">555,4 M</td><td style="text-align: right;">1.417 K</td></tr>
+</table>
+<p style="font-size: 28px;">MLP’nin parametresi çok ama işlemi az (her ağırlık bir kez kullanılır). Konvolüsyonda her ağırlık her piksel konumunda tekrar kullanılır. MobileNetV2, ResNet-18’den <span class="hl">6 kat az işlem</span> ama <span class="hl">2,5 kat fazla aktivasyon</span> üretir.</p>
+<div class="footer"><span>Değerler forward hook ile analitik olarak hesaplandı (src/complexity.py)</span><span>5</span></div>
+
+</section>
+<section id="theory" class="alt">
+<p class="eyebrow">Teorik karmaşıklık</p>
+<h2>Üç formül, üç tahmin</h2>
+<div class="row">
+<div class="card anim" style="--i:0;"><h3>Zaman</h3><div class="formula" style="font-size: 36px;">W<sub>eğitim</sub> ≈ 3·F·n·E</div><p class="txt">İleri geçiş F, geri geçiş ≈ 2F. F ve E sabitken eğitim <b>Θ(n)</b>, inference Θ(m).</p></div>
+<div class="card anim" style="--i:1;"><h3>Bellek</h3><div class="formula" style="font-size: 36px;">M ≈ 3·4P + B·A·2</div><p class="txt">Ağırlık + gradyan + momentum, artı batch’in aktivasyonları. Veri boyutu n’den <b>bağımsız</b>.</p></div>
+<div class="card anim" style="--i:2;"><h3>Verimlilik</h3><div class="formula" style="font-size: 36px;">Roofline</div><p class="txt">Byte başına az işlem yapan katman (depthwise konv.) bellek bant genişliğini bekler: FLOP azalsa da hızlanmaz.</p></div>
+</div>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>6</span></div>
+
+</section>
+<section id="measure">
+<p class="eyebrow">Ölçüm yöntemi</p>
+<h2>Eğitim ve tahmin ayrı ölçüldü</h2>
+<table>
+<tr><th style="width: 20%;">Boyut</th><th style="width: 42%;">Araç</th><th style="width: 38%;">Not</th></tr>
+<tr><td>Zaman</td><td>perf_counter + cuda.synchronize()</td><td>GPU asenkron; senkronize etmeden ölçüm yanlış olur</td></tr>
+<tr><td>RAM</td><td>psutil, 50 ms örnekleme</td><td>Süreç peak RSS</td></tr>
+<tr><td>VRAM</td><td>PyTorch allocator + NVML</td><td>Modele ait peak bellek</td></tr>
+<tr><td>GPU enerjisi</td><td>NVML donanım enerji sayacı</td><td>Gerçek ölçüm (mJ)</td></tr>
+<tr><td>CPU/RAM enerjisi, CO₂</td><td>CodeCarbon 3.3.3, Türkiye şebekesi</td><td>Tahmin (Windows’ta RAPL yok)</td></tr>
+<tr><td>Performans</td><td>scikit-learn</td><td>Accuracy, P, R, F1, ROC-AUC</td></tr>
+</table>
+<p style="font-size: 26px;">Donanım: Intel i7-12700H · 32 GB RAM · RTX 4060 Laptop 8 GB (100 W) · Windows 11 · Python 3.12 · PyTorch 2.6 + CUDA 12.4</p>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>7</span></div>
+
+</section>
+<section id="r-scaling">
+<p class="eyebrow">Sonuç 1 · Veri boyutuyla ölçeklenme (H1)</p>
+<h2>Süre veriyle doğrusal büyüyor: b ≈ 1</h2>
+<div class="row" style="align-items: center;">
+<div class="fig" style="flex: 0 0 780px;"><img src="gorseller/fig1_train_time_scaling.png" alt="Eğitim süresi ile veri boyutu arasındaki log-log grafik; beş modelin eğimi 0,95 ile 1,04 arasında" style="width: 740px; height: 570px;"></div>
+<div class="take">
+<p class="big">b = 0,95 – 1,04; %95 güven aralıklarının hepsi 1’i içeriyor.</p>
+<p>Teorideki W = 3·F·n·E → Θ(n) tahmini doğrulandı.</p>
+<p>MLP ve SmallCNN aynı hızda (≈40 µs/görüntü) çalışıyor, işlem sayıları farklı olsa da: adım başına <b>sabit maliyet</b> baskın. T(n) = c·n’deki c, F’yi izlemiyor.</p>
+<p>Enerji ise MLP (b = 0,91) ve ResNet-18’de (b = 0,96) doğrusalın <b>altında</b>: uzun koşularda ortalama güç düşüyor.</p>
+</div>
+</div>
+<div class="footer"><span>Log-log grafik, 5 seed ortalaması ± std · Tablo: results/scaling_exponents.csv</span><span>8</span></div>
+
+</section>
+<section id="r-flops" class="alt">
+<p class="eyebrow">Sonuç 2 · Teori ve ölçüm (H2, H4)</p>
+<h2>Daha az işlem, daha hızlı demek değil</h2>
+<div class="fig"><img src="gorseller/fig6_efficiency_power.png" alt="Sol: modellerin ulaştığı TFLOP/s; ResNet-18 12,74, MediumCNN 11,03, MobileNetV2 1,41. Sağ: ortalama GPU gücü; MLP 19,4 W, SmallCNN 32,6 W, diğerleri yaklaşık 67-68 W" style="width: 1180px; height: 378px;"></div>
+<div class="row" style="gap: 40px;">
+<div class="col"><p style="font-size: 28px;"><b>MobileNetV2:</b> 6 kat az işlem ama 9 kat düşük verim (1,4 vs 12,7 TFLOP/s), <span class="hl">1,5 kat yavaş</span>. Depthwise katmanlar bellek-sınırlı.</p></div>
+<div class="col"><p style="font-size: 28px;"><b>E ≠ sabit × T:</b> MLP 19 W ile boştaki güce (16,7 W) yakın; enerjisinin çoğu bekleme. Büyük modeller ≈67 W güç sınırında.</p></div>
+</div>
+<div class="footer"><span>n = 50.000, 5 seed ortalaması · TFLOP/s = teorik FLOP / ölçülen süre</span><span>9</span></div>
+
+</section>
+<section id="r-memory">
+<p class="eyebrow">Sonuç 3 · Bellek (H3)</p>
+<h2>Belleği aktivasyonlar belirliyor</h2>
+<div class="row" style="align-items: center;">
+<div class="fig" style="flex: 0 0 780px;"><img src="gorseller/fig5_memory_vram.png" alt="Teorik ve ölçülen peak VRAM; MobileNetV2 1245 MB, ResNet-18 410 MB, MediumCNN 163 MB, MLP 46 MB, SmallCNN 40 MB" style="width: 740px; height: 570px;"></div>
+<div class="take">
+<p class="big">Teori–ölçüm korelasyonu r = 0,98</p>
+<p>MobileNetV2: 2,3 M parametre ama <span class="hl">1.245 MB</span>. ResNet-18: 11,2 M parametre ama 410 MB. Sebep: MobileNetV2 görüntü başına 2,5 kat fazla aktivasyon saklıyor.</p>
+<p>VRAM veri boyutundan bağımsız (eğim &lt; 0,004): bellek Θ(1) · n.</p>
+<p>Süreç RAM’i 710–950 MB, modelden neredeyse bağımsız (veri GPU’da).</p>
+</div>
+</div>
+<div class="footer"><span>M ≈ 3·4P + B·A·2 bayt, B = 128</span><span>10</span></div>
+
+</section>
+<section id="r-tradeoff" class="alt">
+<p class="eyebrow">Sonuç 4 · Doğruluk–enerji dengesi (H5)</p>
+<h2>En doğru model, en verimli model değil</h2>
+<div class="row" style="align-items: center;">
+<div class="fig" style="flex: 0 0 640px;"><img src="gorseller/fig4_tradeoff_accuracy_energy.png" alt="Doğruluk ve eğitim enerjisi saçılım grafiği; Pareto cephesinde MLP, SmallCNN, MediumCNN ve ResNet-18 var, MobileNetV2 cephenin dışında" style="width: 600px; height: 470px;"></div>
+<table style="font-size: 27px;">
+<tr><th style="width: 34%;">Model</th><th style="width: 22%; text-align: right;">Doğruluk</th><th style="width: 22%; text-align: right;">GPU enerji</th><th style="width: 22%; text-align: right;">CO₂</th></tr>
+<tr><td>MLP</td><td style="text-align: right;">%59,3</td><td style="text-align: right;">0,59 kJ</td><td style="text-align: right;">0,24 g</td></tr>
+<tr><td>SmallCNN</td><td style="text-align: right;">%81,1</td><td style="text-align: right;">0,90 kJ</td><td style="text-align: right;">0,28 g</td></tr>
+<tr><td>MediumCNN</td><td style="text-align: right;">%90,6</td><td style="text-align: right;">4,25 kJ</td><td style="text-align: right;">0,85 g</td></tr>
+<tr><td>MobileNetV2</td><td style="text-align: right;">%90,5</td><td style="text-align: right;">19,71 kJ</td><td style="text-align: right;">3,96 g</td></tr>
+<tr><td>ResNet-18</td><td style="text-align: right;">%92,2</td><td style="text-align: right;">13,21 kJ</td><td style="text-align: right;">2,63 g</td></tr>
+</table>
+</div>
+<p style="font-size: 30px;">ResNet-18’in fazladan <b>1,6 puanı</b> 3,1 kat enerji ister: <span class="hl">puan başına 5,5 kJ</span>. MobileNetV2, MediumCNN ile aynı doğrulukta (p = 0,25) ama 4,6 kat enerji harcıyor.</p>
+<div class="footer"><span>n = 50.000, 15 epoch, 5 seed ortalaması · CO₂: CodeCarbon, Türkiye şebekesi</span><span>11</span></div>
+
+</section>
+<section id="r-inference">
+<p class="eyebrow">Sonuç 5 · Tahmin (inference)</p>
+<h2>Gecikmeyi FLOP değil derinlik belirliyor</h2>
+<div class="row" style="align-items: center;">
+<div class="fig" style="flex: 0 0 660px;"><img src="gorseller/fig7_inference.png" alt="Görüntü başına tahmin süresi; GPU batch 1000, CPU batch 250 ve GPU batch 1 karşılaştırması, logaritmik ölçek" style="width: 620px; height: 450px;"></div>
+<table style="font-size: 27px;">
+<tr><th style="width: 36%;">Model</th><th style="width: 22%; text-align: right;">Katman</th><th style="width: 42%; text-align: right;">Gecikme (B = 1)</th></tr>
+<tr><td>SmallCNN</td><td style="text-align: right;">4</td><td style="text-align: right;">1,07 ms</td></tr>
+<tr><td>MLP</td><td style="text-align: right;">4</td><td style="text-align: right;">1,30 ms</td></tr>
+<tr><td>MediumCNN</td><td style="text-align: right;">7</td><td style="text-align: right;">2,20 ms</td></tr>
+<tr><td>ResNet-18</td><td style="text-align: right;">21</td><td style="text-align: right;">6,65 ms</td></tr>
+<tr><td>MobileNetV2</td><td style="text-align: right;">58</td><td style="text-align: right;">13,87 ms</td></tr>
+</table>
+</div>
+<p style="font-size: 30px;">GPU, CPU’dan 33–125 kat hızlı (batch). Ama küçük modeller CPU’da 0,16–0,19 ms/görüntü ile tekil GPU isteğinden bile hızlı: <b>gömülü sistemler için CPU yeterli</b>.</p>
+<div class="footer"><span>Inference enerjisi: ResNet-18 5,2 mJ/görüntü, MediumCNN 1,8 mJ/görüntü (GPU, batch 1000)</span><span>12</span></div>
+
+</section>
+<section id="r-summary" class="alt">
+<p class="eyebrow">Özet profil</p>
+<h2>Dört boyut, tek bakışta</h2>
+<div class="row" style="align-items: center;">
+<div class="fig" style="flex: 0 0 1000px;"><img src="gorseller/fig9_profile_heatmap.png" alt="Beş modelin doğruluk, eğitim süresi, eğitim enerjisi, peak VRAM, inference enerjisi ve gecikme değerlerini gösteren ısı haritası" style="width: 960px; height: 560px;"></div>
+<div class="col" style="gap: 24px;">
+<div class="card"><p class="num">156,7 Wh</p><p class="lbl">100 eğitimin toplam enerjisi (1,57 saat eğitim)</p></div>
+<div class="card"><p class="num">74,4 g</p><p class="lbl">toplam CO₂-eşdeğeri, Türkiye şebekesi</p></div>
+<div class="card"><p class="num">%64</p><p class="lbl">enerjinin GPU payı (CPU %26, RAM %10)</p></div>
+</div>
+</div>
+<div class="footer"><span>CodeCarbon GPU tahmini ile NVML donanım sayacı uyumu: 1,002</span><span>13</span></div>
+
+</section>
+<section id="conclusion" class="dark">
+<p class="eyebrow">Sonuç</p>
+<h2>Teori model içinde doğru, modeller arasında eksik</h2>
+<div class="row">
+<div class="card anim" style="--i:0;"><h3>Doğrulanan</h3><p class="txt">Eğitim süresi Θ(n): tüm eğimler ≈ 1. Bellek n’den bağımsız ve 3·4P + B·A modelini izliyor (r = 0,98).</p></div>
+<div class="card anim" style="--i:1;"><h3>Teorinin göremediği</h3><p class="txt">Aritmetik yoğunluk, derinlik ve adım başına sabit maliyet: 6 kat az FLOP’lu MobileNetV2 daha yavaş, daha çok bellek ve enerji harcıyor.</p></div>
+<div class="card anim" style="--i:2;"><h3>Enerji ayrı bir boyut</h3><p class="txt">P<sub>ort</sub> modele ve koşu süresine göre değişiyor. Enerji süreden çıkarılamaz, ölçülmeli.</p></div>
+</div>
+<p style="font-size: 32px; color: var(--on-dark);">Öneri: MediumCNN, ResNet-18’in doğruluğunun %98’ini enerjisinin üçte biriyle veriyor. <span style="color: #F2A07B;">Gelecek çalışma:</span> Linux/RAPL ile CPU enerjisi, batch boyutu, quantization, Transformer modelleri.</p>
+<div class="footer"><span>BYM303 · CIFAR-10 Karmaşıklık Analizi</span><span>14</span></div>
+
+</section>
+<section id="team">
+<p class="eyebrow">Ekip</p>
+<h2>Teşekkürler · Sorular?</h2>
+<div class="row">
+<div class="card"><h3>Baran Kemal Kılıç</h3><p class="lbl">240609043</p><p class="txt">Deney altyapısı ve ölçüm (run_experiments.py, measure.py)</p></div>
+<div class="card"><h3>İrem Serra Onmaz</h3><p class="lbl">240609009</p><p class="txt">Model mimarileri ve doğruluk analizi (models.py)</p></div>
+<div class="card"><h3>Nihat Güney</h3><p class="lbl">240609050</p><p class="txt">Teorik karmaşıklık ve bellek modeli (complexity.py)</p></div>
+<div class="card"><h3>Süleyman Canberk Eğriboz</h3><p class="lbl">240609014</p><p class="txt">İstatistik, grafikler ve trade-off analizi (analyze.py)</p></div>
+</div>
+<p style="font-size: 28px;">Kod, ham veri (100 koşu) ve makale: proje klasörü · IEEE konferans formatı (AISCI 2027)</p>
+<div class="footer"><span>BYM303 Algoritma Analizi · 2026–2027 Güz</span><span>15</span></div>
+
+</section>
+
+</body></html>

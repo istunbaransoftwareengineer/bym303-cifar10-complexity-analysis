@@ -1,0 +1,12 @@
+# CIFAR-10 is downloaded automatically by torchvision on first run (170 MB)
+data/
+results_quick/
+.venv/
+__pycache__/
+*.pyc
+# LaTeX intermediates
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
