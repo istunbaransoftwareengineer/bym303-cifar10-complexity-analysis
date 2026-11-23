@@ -113,7 +113,7 @@ Hoca "kullandığınız algoritmanın çalışma prensibini ve teorik maliyetini
 Her dosyanın başında İngilizce açıklama (docstring) var; önce onu okuyun.
 
 ### Adım 4 — Makaleyi okuyun (30 dk)
-Derlenmiş hali hazır: **`paper/main.pdf`** (8 sayfa, IEEE formatı). Değişiklik yaparsanız iki yol var:
+Derlenmiş hali hazır: **`BYM 303 Proje Raporu/main.pdf`** (8 sayfa, IEEE formatı). Değişiklik yaparsanız iki yol var:
 
 - Bu bilgisayarda (Tectonic indirildi):
   ```powershell
